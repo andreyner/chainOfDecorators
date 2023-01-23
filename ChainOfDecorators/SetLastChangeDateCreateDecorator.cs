@@ -23,9 +23,8 @@ namespace ChainOfDecorators
 	/// <summary>
 	/// Декоратор по установке автора последнего изменения
 	/// </summary>
-	/// <typeparam name="TEntity"></typeparam>
 	[RegisterDecorator(typeof(ISetLastChangeDateCreateDecorator<>))]
-	internal sealed class SetLastChangeDateCreateDecorator<TEntity> : ISetLastChangeDateCreateDecorator<TEntity>
+	internal class SetLastChangeDateCreateDecorator<TEntity> : ISetLastChangeDateCreateDecorator<TEntity>
 	where TEntity : class, IHasLastChangeDate
 	{
 		[DoNotWire]

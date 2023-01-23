@@ -1,9 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using Castle.MicroKernel.Registration;
 using Castle.Windsor;
-using System;
-using System.ComponentModel;
-using System.Security.Principal;
 
 Console.WriteLine("Hello, World!");
 
@@ -86,7 +82,6 @@ public interface IRegisterDependencyAttribute
 }
 
 /// <summary>Атрибут регистрации зависимости</summary>
-[AttributeUsage(AttributeTargets.Class)]
 public abstract class RegisterDependencyAttribute : Attribute, IRegisterDependencyAttribute
 {
 	private readonly Lazy<RegistratorImpl> _registrator;
@@ -101,7 +96,6 @@ public abstract class RegisterDependencyAttribute : Attribute, IRegisterDependen
 		_registrator = new Lazy<RegistratorImpl>(() => new RegistratorImpl(services, lifestyle, Precedence));
 	}
 
-	/// <summary>Регистратор простых зависимостей</summary>
 	private class RegistratorImpl : IRegistrator
 	{
 		private readonly EImplementationPrecedence _precedence;
@@ -120,29 +114,6 @@ public abstract class RegisterDependencyAttribute : Attribute, IRegisterDependen
 		public void Register(IWindsorContainer container, Type implementation)
 		{
 			var component = Castle.MicroKernel.Registration.Component.For(_services).ImplementedBy(implementation);
-
-			switch (_precedence)
-			{
-				case EImplementationPrecedence.Fallback:
-					component = component.IsFallback();
-					break;
-				case EImplementationPrecedence.Default:
-					component = component.IsDefault();
-					break;
-			}
-
-			switch (_lifestyle)
-			{
-				case EDependencyLifestyle.Singleton:
-					component = component.LifeStyle.Singleton;
-					break;
-				case EDependencyLifestyle.Transient:
-					component = component.LifeStyle.Transient;
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
-
 			container.Register(component);
 		}
 	}
